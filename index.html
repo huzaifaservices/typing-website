@@ -2,18 +2,27 @@
 <html>
 
 <head>
+
     <title>Typing Test</title>
+
 </head>
+
 
 <body>
 
     <h1>⌨️ Typing Test</h1>
 
+    <h2>
+        Time: <span id="timer">60</span> seconds
+    </h2>
+
+
     <p>Type this sentence:</p>
 
-    <h2 id="sentence">
+    <h2>
         The quick brown fox jumps over the lazy dog.
     </h2>
+
 
     <textarea
         id="typing"
@@ -22,20 +31,34 @@
         placeholder="Start typing here...">
     </textarea>
 
+
     <br><br>
 
-    <button onclick="restart()">Restart</button>
+
+    <button onclick="restart()">
+        Restart
+    </button>
+
 
     <h2 id="result"></h2>
 
 
     <script>
 
-        let sentence =
-        "The quick brown fox jumps over the lazy dog.";
+        let time = 60;
+
+        let timerStarted = false;
+
+        let timer;
+
 
         let typing =
         document.getElementById("typing");
+
+
+        let timerDisplay =
+        document.getElementById("timer");
+
 
         let result =
         document.getElementById("result");
@@ -43,10 +66,29 @@
 
         typing.addEventListener("input", function() {
 
-            if (typing.value === sentence) {
+            if (timerStarted === false) {
 
-                result.innerHTML =
-                "🎉 You finished!";
+                timerStarted = true;
+
+                timer = setInterval(function() {
+
+                    time = time - 1;
+
+                    timerDisplay.innerHTML = time;
+
+
+                    if (time === 0) {
+
+                        clearInterval(timer);
+
+                        typing.disabled = true;
+
+                        result.innerHTML =
+                        "⏰ Time is up!";
+
+                    }
+
+                }, 1000);
 
             }
 
@@ -55,7 +97,17 @@
 
         function restart() {
 
+            clearInterval(timer);
+
+            time = 60;
+
+            timerStarted = false;
+
+            timerDisplay.innerHTML = 60;
+
             typing.value = "";
+
+            typing.disabled = false;
 
             result.innerHTML = "";
 
@@ -64,6 +116,7 @@
         }
 
     </script>
+
 
 </body>
 
