@@ -8,36 +8,108 @@
     <style>
 
         body {
-            font-family: Arial;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
             text-align: center;
-            background: #f5f5f5;
             padding: 40px;
         }
 
+
         .box {
             background: white;
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
-            padding: 30px;
+            padding: 35px;
             border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
+
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            font-size: 20px;
+        }
+
+
+        .text {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 10px;
+            font-size: 25px;
+            line-height: 1.8;
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+
+        /* Correct letter */
+
+        .correct {
+            color: green;
+        }
+
+
+        /* Wrong letter */
+
+        .wrong {
+            color: red;
+            background: #ffe5e5;
+        }
+
+
+        /* Current letter */
+
+        .current {
+            border-left: 3px solid blue;
+        }
+
 
         textarea {
             width: 90%;
             height: 120px;
             font-size: 20px;
             padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            resize: none;
         }
 
-        .stats {
-            font-size: 25px;
-            margin: 25px;
+
+        textarea:focus {
+            border-color: blue;
+            outline: none;
         }
+
 
         button {
-            padding: 12px 25px;
-            font-size: 18px;
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 17px;
+            border: none;
+            border-radius: 8px;
+            background: blue;
+            color: white;
+            cursor: pointer;
         }
+
+
+        button:hover {
+            background: darkblue;
+        }
+
+
+        #result {
+            margin-top: 25px;
+        }
+
 
     </style>
 
@@ -55,29 +127,34 @@
 
     <div class="stats">
 
-        ⏱️ Time:
-        <span id="timer">60</span>
+        <div>
+            ⏱️
+            <span id="timer">60</span>
+        </div>
 
-        &nbsp;&nbsp;
+        <div>
+            ⚡
+            <span id="wpm">0</span>
+            WPM
+        </div>
 
-        ⚡ WPM:
-        <span id="wpm">0</span>
-
-        &nbsp;&nbsp;
-
-        🎯 Accuracy:
-        <span id="accuracy">100</span>%
+        <div>
+            🎯
+            <span id="accuracy">100</span>%
+        </div>
 
     </div>
 
 
-    <p>Type this sentence:</p>
+    <!-- TYPING TEXT -->
+
+    <div
+        id="text"
+        class="text">
+    </div>
 
 
-    <h2 id="sentence">
-        The quick brown fox jumps over the lazy dog.
-    </h2>
-
+    <!-- INPUT -->
 
     <textarea
         id="typing"
@@ -85,7 +162,7 @@
     </textarea>
 
 
-    <br><br>
+    <br>
 
 
     <button onclick="restart()">
@@ -103,13 +180,20 @@
 <script>
 
 
-/* The sentence */
+/* --------------------------------
+   SENTENCE
+-------------------------------- */
+
 
 let sentence =
-"The quick brown fox jumps over the lazy dog.";
+"The quick brown fox jumps over the lazy dog. Practice typing every day to become faster and more accurate.";
 
 
-/* Timer */
+
+/* --------------------------------
+   VARIABLES
+-------------------------------- */
+
 
 let time = 60;
 
@@ -119,72 +203,248 @@ let timer;
 
 
 
-/* Get things from the page */
+/* --------------------------------
+   HTML ELEMENTS
+-------------------------------- */
+
+
+let textDisplay =
+document.getElementById("text");
+
 
 let typing =
 document.getElementById("typing");
 
+
 let timerDisplay =
 document.getElementById("timer");
+
 
 let wpmDisplay =
 document.getElementById("wpm");
 
+
 let accuracyDisplay =
 document.getElementById("accuracy");
+
 
 let result =
 document.getElementById("result");
 
 
 
-/* Start timer when user types */
+/* --------------------------------
+   SHOW SENTENCE
+-------------------------------- */
 
-typing.addEventListener("input", function() {
+
+function showSentence() {
 
 
-    /* Start timer */
+    textDisplay.innerHTML = "";
+
+
+    for (
+        let i = 0;
+        i < sentence.length;
+        i++
+    ) {
+
+
+        let letter =
+        document.createElement("span");
+
+
+        letter.innerText =
+        sentence[i];
+
+
+        letter.id =
+        "letter-" + i;
+
+
+        textDisplay.appendChild(
+        letter
+        );
+
+    }
+
+
+    updateCurrentLetter();
+
+}
+
+
+
+/* --------------------------------
+   CURRENT LETTER
+-------------------------------- */
+
+
+function updateCurrentLetter() {
+
+
+    let letters =
+    textDisplay.querySelectorAll("span");
+
+
+    letters.forEach(function(letter) {
+
+        letter.classList.remove(
+        "current"
+        );
+
+    });
+
+
+    let position =
+    typing.value.length;
+
+
+    if (letters[position]) {
+
+        letters[position].classList.add(
+        "current"
+        );
+
+    }
+
+}
+
+
+
+/* --------------------------------
+   START TYPING
+-------------------------------- */
+
+
+typing.addEventListener(
+"input",
+function() {
+
 
     if (timerStarted === false) {
+
 
         timerStarted = true;
 
 
-        timer = setInterval(function() {
+        timer = setInterval(
+        function() {
 
-            time = time - 1;
 
-            timerDisplay.innerHTML = time;
+            time--;
+
+
+            timerDisplay.innerText =
+            time;
 
 
             calculateStats();
 
 
-            if (time === 0) {
+            if (time <= 0) {
+
 
                 clearInterval(timer);
 
-                typing.disabled = true;
 
-                result.innerHTML =
+                typing.disabled =
+                true;
+
+
+                result.innerText =
                 "⏰ Time is up!";
 
             }
+
 
         }, 1000);
 
     }
 
 
-    /* Calculate WPM and accuracy */
+    checkLetters();
+
 
     calculateStats();
+
+
+    updateCurrentLetter();
 
 });
 
 
 
-/* Calculate statistics */
+/* --------------------------------
+   CHECK LETTERS
+-------------------------------- */
+
+
+function checkLetters() {
+
+
+    let typed =
+    typing.value;
+
+
+    for (
+        let i = 0;
+        i < sentence.length;
+        i++
+    ) {
+
+
+        let letter =
+        document.getElementById(
+        "letter-" + i
+        );
+
+
+        letter.classList.remove(
+        "correct"
+        );
+
+
+        letter.classList.remove(
+        "wrong"
+        );
+
+
+        if (i < typed.length) {
+
+
+            if (
+                typed[i] === sentence[i]
+            ) {
+
+
+                letter.classList.add(
+                "correct"
+                );
+
+
+            } else {
+
+
+                letter.classList.add(
+                "wrong"
+                );
+
+            }
+
+        }
+
+    }
+
+}
+
+
+
+/* --------------------------------
+   CALCULATE STATS
+-------------------------------- */
+
 
 function calculateStats() {
 
@@ -192,8 +452,6 @@ function calculateStats() {
     let typed =
     typing.value;
 
-
-    /* Count correct letters */
 
     let correct = 0;
 
@@ -204,7 +462,10 @@ function calculateStats() {
         i++
     ) {
 
-        if (typed[i] === sentence[i]) {
+
+        if (
+            typed[i] === sentence[i]
+        ) {
 
             correct++;
 
@@ -215,25 +476,28 @@ function calculateStats() {
 
     /* Accuracy */
 
+
     let accuracy = 100;
 
 
     if (typed.length > 0) {
 
+
         accuracy =
         Math.round(
-            (correct / typed.length) * 100
+        (correct / typed.length) * 100
         );
 
     }
 
 
-    accuracyDisplay.innerHTML =
+    accuracyDisplay.innerText =
     accuracy;
 
 
 
     /* WPM */
+
 
     let secondsUsed =
     60 - time;
@@ -244,23 +508,27 @@ function calculateStats() {
 
     if (secondsUsed > 0) {
 
+
         wpm =
         Math.round(
-            (correct / 5) /
-            (secondsUsed / 60)
+        (correct / 5) /
+        (secondsUsed / 60)
         );
 
     }
 
 
-    wpmDisplay.innerHTML =
+    wpmDisplay.innerText =
     wpm;
 
 }
 
 
 
-/* Restart */
+/* --------------------------------
+   RESTART
+-------------------------------- */
+
 
 function restart() {
 
@@ -273,30 +541,46 @@ function restart() {
     timerStarted = false;
 
 
-    timerDisplay.innerHTML =
+    timerDisplay.innerText =
     "60";
 
 
-    wpmDisplay.innerHTML =
+    wpmDisplay.innerText =
     "0";
 
 
-    accuracyDisplay.innerHTML =
+    accuracyDisplay.innerText =
     "100";
 
 
     typing.value = "";
 
 
-    typing.disabled = false;
+    typing.disabled =
+    false;
 
 
-    result.innerHTML = "";
+    result.innerText =
+    "";
+
+
+    showSentence();
 
 
     typing.focus();
 
 }
+
+
+
+/* --------------------------------
+   START
+-------------------------------- */
+
+
+showSentence();
+
+typing.focus();
 
 
 </script>
