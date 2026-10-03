@@ -5,29 +5,82 @@
 
     <title>Typing Test</title>
 
+    <style>
+
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #f5f5f5;
+            padding: 40px;
+        }
+
+        .box {
+            background: white;
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        textarea {
+            width: 90%;
+            height: 120px;
+            font-size: 20px;
+            padding: 15px;
+        }
+
+        .stats {
+            font-size: 25px;
+            margin: 25px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+        }
+
+    </style>
+
 </head>
 
 
 <body>
 
+
+<div class="box">
+
+
     <h1>⌨️ Typing Test</h1>
 
-    <h2>
-        Time: <span id="timer">60</span> seconds
-    </h2>
+
+    <div class="stats">
+
+        ⏱️ Time:
+        <span id="timer">60</span>
+
+        &nbsp;&nbsp;
+
+        ⚡ WPM:
+        <span id="wpm">0</span>
+
+        &nbsp;&nbsp;
+
+        🎯 Accuracy:
+        <span id="accuracy">100</span>%
+
+    </div>
 
 
     <p>Type this sentence:</p>
 
-    <h2>
+
+    <h2 id="sentence">
         The quick brown fox jumps over the lazy dog.
     </h2>
 
 
     <textarea
         id="typing"
-        rows="5"
-        cols="60"
         placeholder="Start typing here...">
     </textarea>
 
@@ -43,79 +96,210 @@
     <h2 id="result"></h2>
 
 
-    <script>
-
-        let time = 60;
-
-        let timerStarted = false;
-
-        let timer;
+</div>
 
 
-        let typing =
-        document.getElementById("typing");
+
+<script>
 
 
-        let timerDisplay =
-        document.getElementById("timer");
+/* The sentence */
+
+let sentence =
+"The quick brown fox jumps over the lazy dog.";
 
 
-        let result =
-        document.getElementById("result");
+/* Timer */
+
+let time = 60;
+
+let timerStarted = false;
+
+let timer;
 
 
-        typing.addEventListener("input", function() {
 
-            if (timerStarted === false) {
+/* Get things from the page */
 
-                timerStarted = true;
+let typing =
+document.getElementById("typing");
 
-                timer = setInterval(function() {
+let timerDisplay =
+document.getElementById("timer");
 
-                    time = time - 1;
+let wpmDisplay =
+document.getElementById("wpm");
 
-                    timerDisplay.innerHTML = time;
+let accuracyDisplay =
+document.getElementById("accuracy");
+
+let result =
+document.getElementById("result");
 
 
-                    if (time === 0) {
 
-                        clearInterval(timer);
+/* Start timer when user types */
 
-                        typing.disabled = true;
+typing.addEventListener("input", function() {
 
-                        result.innerHTML =
-                        "⏰ Time is up!";
 
-                    }
+    /* Start timer */
 
-                }, 1000);
+    if (timerStarted === false) {
+
+        timerStarted = true;
+
+
+        timer = setInterval(function() {
+
+            time = time - 1;
+
+            timerDisplay.innerHTML = time;
+
+
+            calculateStats();
+
+
+            if (time === 0) {
+
+                clearInterval(timer);
+
+                typing.disabled = true;
+
+                result.innerHTML =
+                "⏰ Time is up!";
 
             }
 
-        });
+        }, 1000);
+
+    }
 
 
-        function restart() {
+    /* Calculate WPM and accuracy */
 
-            clearInterval(timer);
+    calculateStats();
 
-            time = 60;
+});
 
-            timerStarted = false;
 
-            timerDisplay.innerHTML = 60;
 
-            typing.value = "";
+/* Calculate statistics */
 
-            typing.disabled = false;
+function calculateStats() {
 
-            result.innerHTML = "";
 
-            typing.focus();
+    let typed =
+    typing.value;
+
+
+    /* Count correct letters */
+
+    let correct = 0;
+
+
+    for (
+        let i = 0;
+        i < typed.length;
+        i++
+    ) {
+
+        if (typed[i] === sentence[i]) {
+
+            correct++;
 
         }
 
-    </script>
+    }
+
+
+    /* Accuracy */
+
+    let accuracy = 100;
+
+
+    if (typed.length > 0) {
+
+        accuracy =
+        Math.round(
+            (correct / typed.length) * 100
+        );
+
+    }
+
+
+    accuracyDisplay.innerHTML =
+    accuracy;
+
+
+
+    /* WPM */
+
+    let secondsUsed =
+    60 - time;
+
+
+    let wpm = 0;
+
+
+    if (secondsUsed > 0) {
+
+        wpm =
+        Math.round(
+            (correct / 5) /
+            (secondsUsed / 60)
+        );
+
+    }
+
+
+    wpmDisplay.innerHTML =
+    wpm;
+
+}
+
+
+
+/* Restart */
+
+function restart() {
+
+
+    clearInterval(timer);
+
+
+    time = 60;
+
+    timerStarted = false;
+
+
+    timerDisplay.innerHTML =
+    "60";
+
+
+    wpmDisplay.innerHTML =
+    "0";
+
+
+    accuracyDisplay.innerHTML =
+    "100";
+
+
+    typing.value = "";
+
+
+    typing.disabled = false;
+
+
+    result.innerHTML = "";
+
+
+    typing.focus();
+
+}
+
+
+</script>
 
 
 </body>
