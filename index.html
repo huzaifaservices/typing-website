@@ -14,30 +14,48 @@
             padding: 40px;
         }
 
-
         .box {
             background: white;
             max-width: 900px;
             margin: auto;
             padding: 35px;
             border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
 
-
-        h1 {
-            margin-bottom: 25px;
+        .levels {
+            margin: 25px;
         }
 
+        .levels button {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .easy {
+            background: green;
+            color: white;
+        }
+
+        .medium {
+            background: orange;
+            color: white;
+        }
+
+        .hard {
+            background: red;
+            color: white;
+        }
 
         .stats {
             display: flex;
             justify-content: center;
             gap: 40px;
-            margin-bottom: 30px;
+            margin: 25px;
             font-size: 20px;
         }
-
 
         .text {
             background: #f8fafc;
@@ -49,67 +67,41 @@
             margin-bottom: 25px;
         }
 
-
-        /* Correct letter */
-
         .correct {
             color: green;
         }
-
-
-        /* Wrong letter */
 
         .wrong {
             color: red;
             background: #ffe5e5;
         }
 
-
-        /* Current letter */
-
         .current {
             border-left: 3px solid blue;
         }
-
 
         textarea {
             width: 90%;
             height: 120px;
             font-size: 20px;
             padding: 15px;
-            border: 2px solid #ddd;
             border-radius: 10px;
             resize: none;
         }
 
-
-        textarea:focus {
-            border-color: blue;
-            outline: none;
-        }
-
-
         button {
-            margin-top: 20px;
-            padding: 12px 30px;
-            font-size: 17px;
-            border: none;
-            border-radius: 8px;
-            background: blue;
-            color: white;
             cursor: pointer;
         }
 
-
-        button:hover {
-            background: darkblue;
+        .restart {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
         }
-
-
-        #result {
-            margin-top: 25px;
-        }
-
 
     </style>
 
@@ -125,6 +117,36 @@
     <h1>⌨️ Typing Test</h1>
 
 
+    <!-- DIFFICULTY -->
+
+    <div class="levels">
+
+        <button
+            class="easy"
+            onclick="chooseLevel('easy')">
+            Easy
+        </button>
+
+
+        <button
+            class="medium"
+            onclick="chooseLevel('medium')">
+            Medium
+        </button>
+
+
+        <button
+            class="hard"
+            onclick="chooseLevel('hard')">
+            Hard
+        </button>
+
+    </div>
+
+
+
+    <!-- STATS -->
+
     <div class="stats">
 
         <div>
@@ -132,11 +154,13 @@
             <span id="timer">60</span>
         </div>
 
+
         <div>
             ⚡
             <span id="wpm">0</span>
             WPM
         </div>
+
 
         <div>
             🎯
@@ -146,7 +170,8 @@
     </div>
 
 
-    <!-- TYPING TEXT -->
+
+    <!-- TEXT -->
 
     <div
         id="text"
@@ -154,19 +179,24 @@
     </div>
 
 
+
     <!-- INPUT -->
 
     <textarea
         id="typing"
-        placeholder="Start typing here...">
+        placeholder="Choose a level and start typing...">
     </textarea>
 
 
     <br>
 
 
-    <button onclick="restart()">
+    <button
+        class="restart"
+        onclick="restart()">
+
         Restart
+
     </button>
 
 
@@ -181,17 +211,34 @@
 
 
 /* --------------------------------
-   SENTENCE
+   SENTENCES
 -------------------------------- */
 
 
-let sentence =
-"The quick brown fox jumps over the lazy dog. Practice typing every day to become faster and more accurate.";
+let easyText =
+"The cat is on the mat. The sun is bright and the sky is blue.";
+
+
+let mediumText =
+"The quick brown fox jumps over the lazy dog. Practice typing every day to improve your speed.";
+
+
+let hardText =
+"Learning to type quickly and accurately requires patience, concentration, consistency, and regular practice.";
 
 
 
 /* --------------------------------
-   VARIABLES
+   CURRENT SENTENCE
+-------------------------------- */
+
+
+let sentence = easyText;
+
+
+
+/* --------------------------------
+   TIMER
 -------------------------------- */
 
 
@@ -204,7 +251,7 @@ let timer;
 
 
 /* --------------------------------
-   HTML ELEMENTS
+   ELEMENTS
 -------------------------------- */
 
 
@@ -234,7 +281,43 @@ document.getElementById("result");
 
 
 /* --------------------------------
-   SHOW SENTENCE
+   CHOOSE LEVEL
+-------------------------------- */
+
+
+function chooseLevel(level) {
+
+
+    if (level === "easy") {
+
+        sentence = easyText;
+
+    }
+
+
+    if (level === "medium") {
+
+        sentence = mediumText;
+
+    }
+
+
+    if (level === "hard") {
+
+        sentence = hardText;
+
+    }
+
+
+    restart();
+
+
+}
+
+
+
+/* --------------------------------
+   SHOW TEXT
 -------------------------------- */
 
 
@@ -314,7 +397,7 @@ function updateCurrentLetter() {
 
 
 /* --------------------------------
-   START TYPING
+   TYPING
 -------------------------------- */
 
 
@@ -366,9 +449,7 @@ function() {
 
     checkLetters();
 
-
     calculateStats();
-
 
     updateCurrentLetter();
 
@@ -418,14 +499,11 @@ function checkLetters() {
                 typed[i] === sentence[i]
             ) {
 
-
                 letter.classList.add(
                 "correct"
                 );
 
-
             } else {
-
 
                 letter.classList.add(
                 "wrong"
@@ -442,7 +520,7 @@ function checkLetters() {
 
 
 /* --------------------------------
-   CALCULATE STATS
+   STATISTICS
 -------------------------------- */
 
 
@@ -474,9 +552,6 @@ function calculateStats() {
     }
 
 
-    /* Accuracy */
-
-
     let accuracy = 100;
 
 
@@ -494,9 +569,6 @@ function calculateStats() {
     accuracyDisplay.innerText =
     accuracy;
 
-
-
-    /* WPM */
 
 
     let secondsUsed =
@@ -555,13 +627,10 @@ function restart() {
 
     typing.value = "";
 
-
-    typing.disabled =
-    false;
+    typing.disabled = false;
 
 
-    result.innerText =
-    "";
+    result.innerText = "";
 
 
     showSentence();
