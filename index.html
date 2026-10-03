@@ -1,146 +1,554 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Typing Practice</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Typing Master</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            color: white;
+            min-height: 100vh;
+        }
+
+        header {
             text-align: center;
-            background: #f4f4f4;
-            padding: 30px;
+            padding: 35px 20px 20px;
         }
 
-        h1 {
-            color: #333;
+        header h1 {
+            margin: 0;
+            font-size: 42px;
         }
 
-        #text {
-            font-size: 24px;
-            margin: 30px auto;
-            max-width: 800px;
-            line-height: 1.6;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
+        header p {
+            color: #cbd5e1;
+            font-size: 18px;
         }
 
-        textarea {
-            width: 80%;
-            max-width: 800px;
-            height: 120px;
-            font-size: 20px;
-            padding: 15px;
-            border: 2px solid #ccc;
-            border-radius: 10px;
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: auto;
+            padding-bottom: 50px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.10);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         button {
-            padding: 10px 20px;
-            margin: 8px;
-            font-size: 16px;
-            cursor: pointer;
             border: none;
-            border-radius: 8px;
-            background: #333;
-            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
         button:hover {
-            background: #555;
+            transform: translateY(-2px);
+            background: #e2e8f0;
+        }
+
+        button.active {
+            background: #38bdf8;
+            color: white;
+        }
+
+        .new-test {
+            background: #22c55e;
+            color: white;
+        }
+
+        .new-test:hover {
+            background: #16a34a;
+        }
+
+        .restart {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .restart:hover {
+            background: #d97706;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-title {
+            color: #cbd5e1;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        #timer {
+            color: #38bdf8;
+        }
+
+        #wpm {
+            color: #4ade80;
+        }
+
+        #accuracy {
+            color: #facc15;
+        }
+
+        .passage {
+            background: #f8fafc;
+            color: #1e293b;
+            border-radius: 15px;
+            padding: 30px;
+            font-size: 22px;
+            line-height: 1.8;
+            min-height: 250px;
+            max-height: 430px;
+            overflow-y: auto;
+            margin-bottom: 20px;
         }
 
         .correct {
-            color: green;
+            color: #16a34a;
         }
 
         .wrong {
-            color: red;
+            color: #dc2626;
+            background: #fee2e2;
         }
 
         .current {
-            background: #bde0ff;
+            background: #bae6fd;
+            border-radius: 3px;
         }
 
-        #stats {
-            margin: 20px;
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            resize: vertical;
+            border: none;
+            outline: none;
+            border-radius: 15px;
+            padding: 20px;
             font-size: 20px;
+            line-height: 1.6;
+            font-family: Arial, Helvetica, sans-serif;
+            background: white;
+            color: #1e293b;
+        }
+
+        textarea:focus {
+            box-shadow: 0 0 0 3px #38bdf8;
+        }
+
+        .bottom-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .message {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            min-height: 30px;
+            margin-top: 15px;
+        }
+
+        footer {
+            text-align: center;
+            color: #94a3b8;
+            padding: 20px;
+        }
+
+        @media (max-width: 700px) {
+
+            header h1 {
+                font-size: 32px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .passage {
+                font-size: 18px;
+                padding: 20px;
+            }
+
+            textarea {
+                font-size: 18px;
+            }
+
+            button {
+                flex: 1;
+                min-width: 100px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <h1>⌨️ Typing Practice</h1>
+    <header>
+        <h1>⌨️ Typing Master</h1>
+        <p>Improve your typing speed, accuracy and confidence.</p>
+    </header>
 
-    <div>
-        <button onclick="chooseLevel('easy')">Easy</button>
-        <button onclick="chooseLevel('medium')">Medium</button>
-        <button onclick="chooseLevel('hard')">Hard</button>
+    <div class="container">
+
+        <!-- Difficulty -->
+        <div class="panel">
+
+            <div class="section-title">
+                🎯 Choose Difficulty
+            </div>
+
+            <div class="buttons">
+
+                <button id="easyButton" onclick="chooseLevel('easy')">
+                    Easy
+                </button>
+
+                <button id="mediumButton" onclick="chooseLevel('medium')">
+                    Medium
+                </button>
+
+                <button id="hardButton" onclick="chooseLevel('hard')">
+                    Hard
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Time -->
+        <div class="panel">
+
+            <div class="section-title">
+                ⏱️ Choose Test Time
+            </div>
+
+            <div class="buttons">
+
+                <button id="time2" onclick="chooseTime(2)">
+                    2 Minutes
+                </button>
+
+                <button id="time3" onclick="chooseTime(3)">
+                    3 Minutes
+                </button>
+
+                <button id="time4" onclick="chooseTime(4)">
+                    4 Minutes
+                </button>
+
+                <button id="time5" onclick="chooseTime(5)">
+                    5 Minutes
+                </button>
+
+                <button id="time10" onclick="chooseTime(10)">
+                    10 Minutes
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Stats -->
+        <div class="stats">
+
+            <div class="stat">
+
+                <div class="stat-title">
+                    TIME
+                </div>
+
+                <div class="stat-value" id="timer">
+                    2:00
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-title">
+                    WPM
+                </div>
+
+                <div class="stat-value" id="wpm">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-title">
+                    ACCURACY
+                </div>
+
+                <div class="stat-value" id="accuracy">
+                    100%
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Passage -->
+        <div class="panel">
+
+            <div class="passage" id="text">
+            </div>
+
+            <textarea
+                id="input"
+                placeholder="Start typing the paragraph here..."
+                spellcheck="false">
+            </textarea>
+
+            <div class="message" id="message"></div>
+
+            <div class="bottom-buttons">
+
+                <button class="new-test" onclick="newTest()">
+                    🆕 New Test
+                </button>
+
+                <button class="restart" onclick="restart()">
+                    🔄 Restart
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <button onclick="newTest()">🆕 New Test</button>
 
-    <div id="text"></div>
+    <footer>
+        Typing Master • Practice every day and keep improving 🚀
+    </footer>
 
-    <textarea id="input" placeholder="Start typing here..."></textarea>
-
-    <div id="stats">
-        Time: <span id="time">60</span>s |
-        WPM: <span id="wpm">0</span> |
-        Accuracy: <span id="accuracy">100</span>%
-    </div>
-
-    <button onclick="restart()">🔄 Restart</button>
 
     <script>
+
+        /* =========================
+           TYPING PARAGRAPHS
+        ========================= */
 
         const texts = {
 
             easy: [
-                "The sun is bright and the sky is blue.",
-                "The cat is sitting on the warm mat.",
-                "I like to read books and learn new things."
+
+                `Every day gives us a new opportunity to learn something useful and improve our skills. Reading books, practicing typing, learning new subjects, and spending time on meaningful activities can help us become more confident. Success does not usually happen in one day. It comes from making small improvements every day and continuing to practice even when something feels difficult.`,
+
+                `Typing is an important computer skill that can make many everyday tasks easier. Students can use good typing skills to complete assignments, write notes, prepare projects, and communicate with others. At first, typing may feel slow, but regular practice helps your fingers remember where the keys are. Try to type carefully, keep a comfortable rhythm, and focus on accuracy before trying to become extremely fast.`,
+
+                `Learning something new takes time and patience. When you practice a skill regularly, your brain and body slowly become more familiar with it. You may make mistakes in the beginning, and that is completely normal. Instead of becoming frustrated, learn from your mistakes and try again. With enough practice, tasks that once seemed difficult can become easier and more natural.`
             ],
+
 
             medium: [
-                "The quick brown fox jumps over the lazy dog.",
-                "Practice typing every day to improve your speed.",
-                "Good typing skills help you work faster and more accurately."
+
+                `Learning to type quickly and accurately requires patience, concentration, and regular practice. In the beginning, you may need to think carefully about the location of each key, but your hands will gradually become more comfortable with the keyboard. Try to keep your eyes on the screen instead of looking at your fingers. A steady rhythm is often more useful than trying to type as quickly as possible.`,
+
+                `Technology has changed the way people communicate, study, work, and share information. Computers allow us to create documents, search for information, complete school projects, communicate with friends, and explore new ideas. Because computers are such an important part of modern life, developing useful computer skills can save time and make everyday activities more convenient and productive.`,
+
+                `Good communication depends on clear thinking and careful attention to detail. Whether you are writing an assignment, sending a message, or preparing a report, it is important to organize your ideas before presenting them. Accurate typing can help you express those ideas more efficiently. The more you practice, the easier it becomes to concentrate on your ideas instead of searching for individual keys.`
             ],
 
+
             hard: [
-                "Learning to type quickly and accurately requires patience and regular practice.",
-                "Concentration and consistency can help you become a faster and more confident typist.",
-                "Technology makes communication easier when we can type our ideas clearly and efficiently."
+
+                `Developing excellent typing skills requires concentration, consistency, patience, and deliberate practice. Professional typists do not become fast overnight. Instead, they improve gradually by repeating difficult tasks, correcting mistakes, and developing a comfortable typing rhythm. Accuracy should remain an important goal because typing quickly is not very useful if most of the words contain errors. With regular practice, both speed and confidence can improve.`,
+
+                `Effective communication has become increasingly important in a world where people frequently depend on computers and digital devices. Students and professionals often need to write large amounts of information within limited periods of time. Strong typing skills allow people to focus more attention on organizing their thoughts, researching information, and solving problems rather than constantly searching for individual keys on the keyboard.`,
+
+                `Consistency is one of the most valuable qualities when developing a new skill. A person who practices for a short amount of time every day can often make more progress than someone who practices for several hours only once in a while. Typing is no different. Regular sessions can improve muscle memory, accuracy, concentration, and confidence. The goal should not simply be to type faster, but to become accurate and comfortable while maintaining a steady pace.`
             ]
 
         };
 
-        let currentLevel = "easy";
-        let sentence = "";
-        let startTime = null;
-        let timer = null;
-        let timeLeft = 60;
 
-        const textDisplay = document.getElementById("text");
-        const input = document.getElementById("input");
+        /* =========================
+           VARIABLES
+        ========================= */
+
+        let currentLevel = "easy";
+
+        let testMinutes = 2;
+
+        let sentence = "";
+
+        let startTime = null;
+
+        let timer = null;
+
+        let timeLeft = 120;
+
+        let testRunning = false;
+
+
+        /* =========================
+           ELEMENTS
+        ========================= */
+
+        const textDisplay =
+            document.getElementById("text");
+
+        const input =
+            document.getElementById("input");
+
+        const timerDisplay =
+            document.getElementById("timer");
+
+        const wpmDisplay =
+            document.getElementById("wpm");
+
+        const accuracyDisplay =
+            document.getElementById("accuracy");
+
+        const message =
+            document.getElementById("message");
+
+
+        /* =========================
+           CHOOSE DIFFICULTY
+        ========================= */
 
         function chooseLevel(level) {
+
             currentLevel = level;
+
+            updateLevelButtons();
+
             newTest();
         }
+
+
+        function updateLevelButtons() {
+
+            document
+                .getElementById("easyButton")
+                .classList.remove("active");
+
+            document
+                .getElementById("mediumButton")
+                .classList.remove("active");
+
+            document
+                .getElementById("hardButton")
+                .classList.remove("active");
+
+            document
+                .getElementById(currentLevel + "Button")
+                .classList.add("active");
+        }
+
+
+        /* =========================
+           CHOOSE TIME
+        ========================= */
+
+        function chooseTime(minutes) {
+
+            testMinutes = minutes;
+
+            updateTimeButtons();
+
+            restart();
+        }
+
+
+        function updateTimeButtons() {
+
+            const buttons = [2, 3, 4, 5, 10];
+
+            buttons.forEach(function(minutes) {
+
+                document
+                    .getElementById("time" + minutes)
+                    .classList.remove("active");
+
+            });
+
+            document
+                .getElementById("time" + testMinutes)
+                .classList.add("active");
+        }
+
+
+        /* =========================
+           NEW TEST
+        ========================= */
 
         function newTest() {
 
             const list = texts[currentLevel];
 
-            const randomNumber = Math.floor(Math.random() * list.length);
+            const randomNumber =
+                Math.floor(Math.random() * list.length);
 
             sentence = list[randomNumber];
 
             restart();
         }
+
+
+        /* =========================
+           DISPLAY TEXT
+        ========================= */
 
         function displayText() {
 
@@ -148,11 +556,14 @@
 
             for (let i = 0; i < sentence.length; i++) {
 
-                const letter = document.createElement("span");
+                const letter =
+                    document.createElement("span");
 
-                letter.textContent = sentence[i];
+                letter.textContent =
+                    sentence[i];
 
-                letter.id = "letter-" + i;
+                letter.id =
+                    "letter-" + i;
 
                 textDisplay.appendChild(letter);
             }
@@ -160,108 +571,260 @@
             highlightCurrent(0);
         }
 
+
+        /* =========================
+           CURRENT LETTER
+        ========================= */
+
         function highlightCurrent(position) {
 
-            for (let i = 0; i < sentence.length; i++) {
+            for (
+                let i = 0;
+                i < sentence.length;
+                i++
+            ) {
 
-                const letter = document.getElementById("letter-" + i);
+                const letter =
+                    document.getElementById(
+                        "letter-" + i
+                    );
 
                 if (letter) {
-                    letter.classList.remove("current");
+
+                    letter.classList.remove(
+                        "current"
+                    );
+
                 }
             }
+
 
             if (position < sentence.length) {
 
-                const current = document.getElementById("letter-" + position);
+                const current =
+                    document.getElementById(
+                        "letter-" + position
+                    );
 
                 if (current) {
-                    current.classList.add("current");
+
+                    current.classList.add(
+                        "current"
+                    );
+
+                    current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+
                 }
             }
         }
 
-        input.addEventListener("input", function() {
 
-            if (!startTime) {
-                startTime = new Date();
-                startTimer();
-            }
+        /* =========================
+           TYPING
+        ========================= */
 
-            const typed = input.value;
+        input.addEventListener(
+            "input",
+            function() {
 
-            let correct = 0;
+                if (!testRunning) {
 
-            for (let i = 0; i < sentence.length; i++) {
+                    startTime =
+                        new Date();
 
-                const letter = document.getElementById("letter-" + i);
+                    testRunning = true;
 
-                if (!letter) continue;
+                    startTimer();
+                }
 
-                letter.classList.remove("correct");
-                letter.classList.remove("wrong");
 
-                if (i < typed.length) {
+                const typed =
+                    input.value;
 
-                    if (typed[i] === sentence[i]) {
-                        letter.classList.add("correct");
-                        correct++;
-                    } else {
-                        letter.classList.add("wrong");
+                let correct = 0;
+
+
+                for (
+                    let i = 0;
+                    i < sentence.length;
+                    i++
+                ) {
+
+                    const letter =
+                        document.getElementById(
+                            "letter-" + i
+                        );
+
+                    if (!letter) continue;
+
+
+                    letter.classList.remove(
+                        "correct"
+                    );
+
+                    letter.classList.remove(
+                        "wrong"
+                    );
+
+
+                    if (i < typed.length) {
+
+                        if (
+                            typed[i] ===
+                            sentence[i]
+                        ) {
+
+                            letter.classList.add(
+                                "correct"
+                            );
+
+                            correct++;
+
+                        } else {
+
+                            letter.classList.add(
+                                "wrong"
+                            );
+
+                        }
                     }
                 }
-            }
 
-            highlightCurrent(typed.length);
 
-            updateStats(correct, typed.length);
+                highlightCurrent(
+                    typed.length
+                );
 
-            if (typed === sentence) {
 
-                clearInterval(timer);
+                updateStats(
+                    correct,
+                    typed.length
+                );
 
-                input.disabled = true;
 
-                alert("🎉 Great job! You finished!");
-            }
-
-        });
-
-        function startTimer() {
-
-            timer = setInterval(function() {
-
-                timeLeft--;
-
-                document.getElementById("time").textContent = timeLeft;
-
-                if (timeLeft <= 0) {
+                if (typed === sentence) {
 
                     clearInterval(timer);
 
+                    testRunning = false;
+
                     input.disabled = true;
 
-                    alert("⏰ Time is up!");
+                    message.textContent =
+                        "🎉 Excellent! You completed the paragraph!";
 
                 }
 
-            }, 1000);
+            }
+        );
+
+
+        /* =========================
+           TIMER
+        ========================= */
+
+        function startTimer() {
+
+            timer =
+                setInterval(function() {
+
+                    timeLeft--;
+
+                    updateTimerDisplay();
+
+
+                    if (timeLeft <= 0) {
+
+                        clearInterval(timer);
+
+                        testRunning = false;
+
+                        input.disabled = true;
+
+                        message.textContent =
+                            "⏰ Time is up! Great effort!";
+
+                    }
+
+                }, 1000);
         }
 
-        function updateStats(correct, typed) {
 
-            if (!startTime || typed === 0) return;
+        /* =========================
+           TIMER DISPLAY
+        ========================= */
 
-            const elapsed = (new Date() - startTime) / 1000 / 60;
+        function updateTimerDisplay() {
 
-            const wpm = Math.round((correct / 5) / elapsed);
+            const minutes =
+                Math.floor(timeLeft / 60);
 
-            const accuracy = Math.round((correct / typed) * 100);
+            const seconds =
+                timeLeft % 60;
 
-            document.getElementById("wpm").textContent = wpm;
-
-            document.getElementById("accuracy").textContent = accuracy;
+            timerDisplay.textContent =
+                minutes +
+                ":" +
+                String(seconds).padStart(2, "0");
         }
+
+
+        /* =========================
+           WPM + ACCURACY
+        ========================= */
+
+        function updateStats(
+            correct,
+            typed
+        ) {
+
+            if (
+                !startTime ||
+                typed === 0
+            ) {
+                return;
+            }
+
+
+            const elapsed =
+                (new Date() - startTime)
+                / 1000
+                / 60;
+
+
+            if (elapsed <= 0) {
+                return;
+            }
+
+
+            const wpm =
+                Math.round(
+                    (correct / 5) /
+                    elapsed
+                );
+
+
+            const accuracy =
+                Math.round(
+                    (correct / typed) * 100
+                );
+
+
+            wpmDisplay.textContent =
+                wpm;
+
+
+            accuracyDisplay.textContent =
+                accuracy + "%";
+        }
+
+
+        /* =========================
+           RESTART
+        ========================= */
 
         function restart() {
 
@@ -269,26 +832,43 @@
 
             startTime = null;
 
-            timeLeft = 60;
+            testRunning = false;
+
+            timeLeft =
+                testMinutes * 60;
 
             input.value = "";
 
             input.disabled = false;
 
-            document.getElementById("time").textContent = "60";
+            wpmDisplay.textContent =
+                "0";
 
-            document.getElementById("wpm").textContent = "0";
+            accuracyDisplay.textContent =
+                "100%";
 
-            document.getElementById("accuracy").textContent = "100";
+            message.textContent = "";
+
+            updateTimerDisplay();
 
             displayText();
 
             input.focus();
         }
 
+
+        /* =========================
+           START WEBSITE
+        ========================= */
+
+        updateLevelButtons();
+
+        updateTimeButtons();
+
         newTest();
 
     </script>
 
 </body>
+
 </html>
