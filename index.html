@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>My Typing Website</title>
+    <title>Typing Test</title>
 </head>
 
 <body>
 
-    <h1>⌨️ My Typing Website</h1>
+    <h1>⌨️ Typing Test</h1>
 
     <p>Type this sentence:</p>
 
-    <h2>The quick brown fox jumps over the lazy dog.</h2>
+    <h2 id="sentence">
+        The quick brown fox jumps over the lazy dog.
+    </h2>
 
     <textarea
         id="typing"
@@ -19,5 +22,49 @@
         placeholder="Start typing here...">
     </textarea>
 
+    <br><br>
+
+    <button onclick="restart()">Restart</button>
+
+    <h2 id="result"></h2>
+
+
+    <script>
+
+        let sentence =
+        "The quick brown fox jumps over the lazy dog.";
+
+        let typing =
+        document.getElementById("typing");
+
+        let result =
+        document.getElementById("result");
+
+
+        typing.addEventListener("input", function() {
+
+            if (typing.value === sentence) {
+
+                result.innerHTML =
+                "🎉 You finished!";
+
+            }
+
+        });
+
+
+        function restart() {
+
+            typing.value = "";
+
+            result.innerHTML = "";
+
+            typing.focus();
+
+        }
+
+    </script>
+
 </body>
+
 </html>
