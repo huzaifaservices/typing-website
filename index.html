@@ -1,70 +1,53 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
-    <title>Typing Test</title>
+    <title>Typing Practice</title>
 
     <style>
-
         body {
             font-family: Arial, sans-serif;
-            background: #f4f6f8;
             text-align: center;
-            padding: 40px;
+            background: #f4f4f4;
+            padding: 30px;
         }
 
-        .box {
+        h1 {
+            color: #333;
+        }
+
+        #text {
+            font-size: 24px;
+            margin: 30px auto;
+            max-width: 800px;
+            line-height: 1.6;
             background: white;
-            max-width: 900px;
-            margin: auto;
-            padding: 35px;
-            border-radius: 15px;
+            padding: 20px;
+            border-radius: 10px;
         }
 
-        .levels {
-            margin: 25px;
+        textarea {
+            width: 80%;
+            max-width: 800px;
+            height: 120px;
+            font-size: 20px;
+            padding: 15px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
         }
 
-        .levels button {
-            margin: 5px;
+        button {
             padding: 10px 20px;
+            margin: 8px;
+            font-size: 16px;
+            cursor: pointer;
             border: none;
             border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .easy {
-            background: green;
+            background: #333;
             color: white;
         }
 
-        .medium {
-            background: orange;
-            color: white;
-        }
-
-        .hard {
-            background: red;
-            color: white;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin: 25px;
-            font-size: 20px;
-        }
-
-        .text {
-            background: #f8fafc;
-            padding: 25px;
-            border-radius: 10px;
-            font-size: 25px;
-            line-height: 1.8;
-            text-align: left;
-            margin-bottom: 25px;
+        button:hover {
+            background: #555;
         }
 
         .correct {
@@ -73,588 +56,239 @@
 
         .wrong {
             color: red;
-            background: #ffe5e5;
         }
 
         .current {
-            border-left: 3px solid blue;
+            background: #bde0ff;
         }
 
-        textarea {
-            width: 90%;
-            height: 120px;
+        #stats {
+            margin: 20px;
             font-size: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            resize: none;
         }
-
-        button {
-            cursor: pointer;
-        }
-
-        .restart {
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: blue;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 17px;
-        }
-
     </style>
-
 </head>
-
 
 <body>
 
+    <h1>⌨️ Typing Practice</h1>
 
-<div class="box">
-
-
-    <h1>⌨️ Typing Test</h1>
-
-
-    <!-- DIFFICULTY -->
-
-    <div class="levels">
-
-        <button
-            class="easy"
-            onclick="chooseLevel('easy')">
-            Easy
-        </button>
-
-
-        <button
-            class="medium"
-            onclick="chooseLevel('medium')">
-            Medium
-        </button>
-
-
-        <button
-            class="hard"
-            onclick="chooseLevel('hard')">
-            Hard
-        </button>
-
+    <div>
+        <button onclick="chooseLevel('easy')">Easy</button>
+        <button onclick="chooseLevel('medium')">Medium</button>
+        <button onclick="chooseLevel('hard')">Hard</button>
     </div>
 
+    <button onclick="newTest()">🆕 New Test</button>
 
+    <div id="text"></div>
 
-    <!-- STATS -->
+    <textarea id="input" placeholder="Start typing here..."></textarea>
 
-    <div class="stats">
-
-        <div>
-            ⏱️
-            <span id="timer">60</span>
-        </div>
-
-
-        <div>
-            ⚡
-            <span id="wpm">0</span>
-            WPM
-        </div>
-
-
-        <div>
-            🎯
-            <span id="accuracy">100</span>%
-        </div>
-
+    <div id="stats">
+        Time: <span id="time">60</span>s |
+        WPM: <span id="wpm">0</span> |
+        Accuracy: <span id="accuracy">100</span>%
     </div>
 
+    <button onclick="restart()">🔄 Restart</button>
 
+    <script>
 
-    <!-- TEXT -->
+        const texts = {
 
-    <div
-        id="text"
-        class="text">
-    </div>
+            easy: [
+                "The sun is bright and the sky is blue.",
+                "The cat is sitting on the warm mat.",
+                "I like to read books and learn new things."
+            ],
 
+            medium: [
+                "The quick brown fox jumps over the lazy dog.",
+                "Practice typing every day to improve your speed.",
+                "Good typing skills help you work faster and more accurately."
+            ],
 
+            hard: [
+                "Learning to type quickly and accurately requires patience and regular practice.",
+                "Concentration and consistency can help you become a faster and more confident typist.",
+                "Technology makes communication easier when we can type our ideas clearly and efficiently."
+            ]
 
-    <!-- INPUT -->
+        };
 
-    <textarea
-        id="typing"
-        placeholder="Choose a level and start typing...">
-    </textarea>
+        let currentLevel = "easy";
+        let sentence = "";
+        let startTime = null;
+        let timer = null;
+        let timeLeft = 60;
 
+        const textDisplay = document.getElementById("text");
+        const input = document.getElementById("input");
 
-    <br>
+        function chooseLevel(level) {
+            currentLevel = level;
+            newTest();
+        }
 
+        function newTest() {
 
-    <button
-        class="restart"
-        onclick="restart()">
+            const list = texts[currentLevel];
 
-        Restart
+            const randomNumber = Math.floor(Math.random() * list.length);
 
-    </button>
+            sentence = list[randomNumber];
 
+            restart();
+        }
 
-    <h2 id="result"></h2>
+        function displayText() {
 
+            textDisplay.innerHTML = "";
 
-</div>
+            for (let i = 0; i < sentence.length; i++) {
 
+                const letter = document.createElement("span");
 
+                letter.textContent = sentence[i];
 
-<script>
+                letter.id = "letter-" + i;
 
+                textDisplay.appendChild(letter);
+            }
 
-/* --------------------------------
-   SENTENCES
--------------------------------- */
+            highlightCurrent(0);
+        }
 
+        function highlightCurrent(position) {
 
-let easyText =
-"The cat is on the mat. The sun is bright and the sky is blue.";
+            for (let i = 0; i < sentence.length; i++) {
 
+                const letter = document.getElementById("letter-" + i);
 
-let mediumText =
-"The quick brown fox jumps over the lazy dog. Practice typing every day to improve your speed.";
+                if (letter) {
+                    letter.classList.remove("current");
+                }
+            }
 
+            if (position < sentence.length) {
 
-let hardText =
-"Learning to type quickly and accurately requires patience, concentration, consistency, and regular practice.";
+                const current = document.getElementById("letter-" + position);
 
+                if (current) {
+                    current.classList.add("current");
+                }
+            }
+        }
 
+        input.addEventListener("input", function() {
 
-/* --------------------------------
-   CURRENT SENTENCE
--------------------------------- */
+            if (!startTime) {
+                startTime = new Date();
+                startTimer();
+            }
 
+            const typed = input.value;
 
-let sentence = easyText;
+            let correct = 0;
 
+            for (let i = 0; i < sentence.length; i++) {
 
+                const letter = document.getElementById("letter-" + i);
 
-/* --------------------------------
-   TIMER
--------------------------------- */
+                if (!letter) continue;
 
+                letter.classList.remove("correct");
+                letter.classList.remove("wrong");
 
-let time = 60;
+                if (i < typed.length) {
 
-let timerStarted = false;
+                    if (typed[i] === sentence[i]) {
+                        letter.classList.add("correct");
+                        correct++;
+                    } else {
+                        letter.classList.add("wrong");
+                    }
+                }
+            }
 
-let timer;
+            highlightCurrent(typed.length);
 
+            updateStats(correct, typed.length);
 
-
-/* --------------------------------
-   ELEMENTS
--------------------------------- */
-
-
-let textDisplay =
-document.getElementById("text");
-
-
-let typing =
-document.getElementById("typing");
-
-
-let timerDisplay =
-document.getElementById("timer");
-
-
-let wpmDisplay =
-document.getElementById("wpm");
-
-
-let accuracyDisplay =
-document.getElementById("accuracy");
-
-
-let result =
-document.getElementById("result");
-
-
-
-/* --------------------------------
-   CHOOSE LEVEL
--------------------------------- */
-
-
-function chooseLevel(level) {
-
-
-    if (level === "easy") {
-
-        sentence = easyText;
-
-    }
-
-
-    if (level === "medium") {
-
-        sentence = mediumText;
-
-    }
-
-
-    if (level === "hard") {
-
-        sentence = hardText;
-
-    }
-
-
-    restart();
-
-
-}
-
-
-
-/* --------------------------------
-   SHOW TEXT
--------------------------------- */
-
-
-function showSentence() {
-
-
-    textDisplay.innerHTML = "";
-
-
-    for (
-        let i = 0;
-        i < sentence.length;
-        i++
-    ) {
-
-
-        let letter =
-        document.createElement("span");
-
-
-        letter.innerText =
-        sentence[i];
-
-
-        letter.id =
-        "letter-" + i;
-
-
-        textDisplay.appendChild(
-        letter
-        );
-
-    }
-
-
-    updateCurrentLetter();
-
-}
-
-
-
-/* --------------------------------
-   CURRENT LETTER
--------------------------------- */
-
-
-function updateCurrentLetter() {
-
-
-    let letters =
-    textDisplay.querySelectorAll("span");
-
-
-    letters.forEach(function(letter) {
-
-        letter.classList.remove(
-        "current"
-        );
-
-    });
-
-
-    let position =
-    typing.value.length;
-
-
-    if (letters[position]) {
-
-        letters[position].classList.add(
-        "current"
-        );
-
-    }
-
-}
-
-
-
-/* --------------------------------
-   TYPING
--------------------------------- */
-
-
-typing.addEventListener(
-"input",
-function() {
-
-
-    if (timerStarted === false) {
-
-
-        timerStarted = true;
-
-
-        timer = setInterval(
-        function() {
-
-
-            time--;
-
-
-            timerDisplay.innerText =
-            time;
-
-
-            calculateStats();
-
-
-            if (time <= 0) {
-
+            if (typed === sentence) {
 
                 clearInterval(timer);
 
+                input.disabled = true;
 
-                typing.disabled =
-                true;
-
-
-                result.innerText =
-                "⏰ Time is up!";
-
+                alert("🎉 Great job! You finished!");
             }
 
+        });
 
-        }, 1000);
+        function startTimer() {
 
-    }
+            timer = setInterval(function() {
 
+                timeLeft--;
 
-    checkLetters();
+                document.getElementById("time").textContent = timeLeft;
 
-    calculateStats();
+                if (timeLeft <= 0) {
 
-    updateCurrentLetter();
+                    clearInterval(timer);
 
-});
+                    input.disabled = true;
 
+                    alert("⏰ Time is up!");
 
+                }
 
-/* --------------------------------
-   CHECK LETTERS
--------------------------------- */
-
-
-function checkLetters() {
-
-
-    let typed =
-    typing.value;
-
-
-    for (
-        let i = 0;
-        i < sentence.length;
-        i++
-    ) {
-
-
-        let letter =
-        document.getElementById(
-        "letter-" + i
-        );
-
-
-        letter.classList.remove(
-        "correct"
-        );
-
-
-        letter.classList.remove(
-        "wrong"
-        );
-
-
-        if (i < typed.length) {
-
-
-            if (
-                typed[i] === sentence[i]
-            ) {
-
-                letter.classList.add(
-                "correct"
-                );
-
-            } else {
-
-                letter.classList.add(
-                "wrong"
-                );
-
-            }
-
+            }, 1000);
         }
 
-    }
+        function updateStats(correct, typed) {
 
-}
+            if (!startTime || typed === 0) return;
 
+            const elapsed = (new Date() - startTime) / 1000 / 60;
 
+            const wpm = Math.round((correct / 5) / elapsed);
 
-/* --------------------------------
-   STATISTICS
--------------------------------- */
+            const accuracy = Math.round((correct / typed) * 100);
 
+            document.getElementById("wpm").textContent = wpm;
 
-function calculateStats() {
-
-
-    let typed =
-    typing.value;
-
-
-    let correct = 0;
-
-
-    for (
-        let i = 0;
-        i < typed.length;
-        i++
-    ) {
-
-
-        if (
-            typed[i] === sentence[i]
-        ) {
-
-            correct++;
-
+            document.getElementById("accuracy").textContent = accuracy;
         }
 
-    }
+        function restart() {
 
+            clearInterval(timer);
 
-    let accuracy = 100;
+            startTime = null;
 
+            timeLeft = 60;
 
-    if (typed.length > 0) {
+            input.value = "";
 
+            input.disabled = false;
 
-        accuracy =
-        Math.round(
-        (correct / typed.length) * 100
-        );
+            document.getElementById("time").textContent = "60";
 
-    }
+            document.getElementById("wpm").textContent = "0";
 
+            document.getElementById("accuracy").textContent = "100";
 
-    accuracyDisplay.innerText =
-    accuracy;
+            displayText();
 
+            input.focus();
+        }
 
+        newTest();
 
-    let secondsUsed =
-    60 - time;
-
-
-    let wpm = 0;
-
-
-    if (secondsUsed > 0) {
-
-
-        wpm =
-        Math.round(
-        (correct / 5) /
-        (secondsUsed / 60)
-        );
-
-    }
-
-
-    wpmDisplay.innerText =
-    wpm;
-
-}
-
-
-
-/* --------------------------------
-   RESTART
--------------------------------- */
-
-
-function restart() {
-
-
-    clearInterval(timer);
-
-
-    time = 60;
-
-    timerStarted = false;
-
-
-    timerDisplay.innerText =
-    "60";
-
-
-    wpmDisplay.innerText =
-    "0";
-
-
-    accuracyDisplay.innerText =
-    "100";
-
-
-    typing.value = "";
-
-    typing.disabled = false;
-
-
-    result.innerText = "";
-
-
-    showSentence();
-
-
-    typing.focus();
-
-}
-
-
-
-/* --------------------------------
-   START
--------------------------------- */
-
-
-showSentence();
-
-typing.focus();
-
-
-</script>
-
+    </script>
 
 </body>
-
 </html>
