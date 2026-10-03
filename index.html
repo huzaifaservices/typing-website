@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TypeForge - Improve Your Typing</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #202124;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 18px 40px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav a {
+            margin-left: 25px;
+            text-decoration: none;
+            color: #555;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 35px;
+        }
+
+        .start-button {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+
+            padding: 15px 30px;
+            border-radius: 10px;
+
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .features {
+            max-width: 1000px;
+            margin: auto;
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: #777;
+        }
+
+        @media (max-width: 700px) {
+
+            header {
+                padding: 15px 20px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo">
+            TypeForge
+        </div>
+
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Practice</a>
+            <a href="#">Lessons</a>
+            <a href="#">Stats</a>
+        </nav>
+
+    </header>
+
+
+    <section class="hero">
+
+        <h1>Improve Your Typing</h1>
+
+        <p>
+            Practice your typing speed, accuracy and skills.
+        </p>
+
+        <a href="#" class="start-button">
+            Start Typing
+        </a>
+
+    </section>
+
+
+    <section class="features">
+
+        <div class="card">
+
+            <h2>⌨️ Practice</h2>
+
+            <p>
+                Practice typing with lessons designed
+                to improve your keyboard skills.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>⚡ Speed Tests</h2>
+
+            <p>
+                Test your typing speed and see
+                how many words you can type per minute.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>📊 Statistics</h2>
+
+            <p>
+                Track your WPM, accuracy and
+                typing progress over time.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+
+        <p>© 2026 TypeForge</p>
+
+    </footer>
+
+</body>
+</html>
